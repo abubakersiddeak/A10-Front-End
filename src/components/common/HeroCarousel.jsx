@@ -69,7 +69,7 @@ export default function HeroCarousel() {
 
   return (
     <div
-      className="w-full max-w-8xl mx-auto mt-15 px-4" // Added horizontal padding for safety
+      className="w-full  max-w-8xl mx-auto md:mt-5 px-6 " // Added horizontal padding for safety
       style={{
         backgroundImage:
           'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48ZmlsdGVyIGlkPSJuIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjQiIG51bU9jdGF2ZXM9IjIiIHNlZWQ9IjkiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMDEwMjA0Ii8+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI24pIiBvcGFjaXR5PSIuMDgiLz48L2ZpbHRlcj48L3N2Zy4")',

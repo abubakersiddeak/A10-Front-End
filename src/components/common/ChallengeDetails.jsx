@@ -1,11 +1,11 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Leaf,
   Clock,
   Users,
   Target,
-  ArrowLeft,
+  ArrowLeft, // Used in the updated link structure
   Calendar,
   User,
 } from "lucide-react";
@@ -25,7 +25,7 @@ export default function ChallengeDetails() {
   const { dbUser, currentUser } = useContext(AuthContext);
   const { id } = useParams();
   const navigate = useNavigate();
-  const [challenge, setChallenge] = useState(null); // Initialize with null for proper loading state
+  const [challenge, setChallenge] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -49,11 +49,18 @@ export default function ChallengeDetails() {
     };
     fetchdata();
   }, [id]);
+
   const handleJoinButtonClick = async () => {
+    // Check if user is logged in before continuing
+    if (!currentUser || !dbUser) {
+      toast.info("Please login or sign up to join a challenge.");
+      return;
+    }
+
     const token = await currentUser.getIdToken();
     const challengeId = challenge._id;
     const userId = dbUser._id;
-    console.log(challengeId, userId);
+
     try {
       const response = await fetch(
         `${
@@ -70,18 +77,20 @@ export default function ChallengeDetails() {
       );
 
       const data = await response.json();
-      console.log("Server Response:", data);
 
       if (response.ok) {
         toast.success(data.message || "Joined challenge successfully!");
+        // Optional: Refetch challenge data here to update participant count locally
       } else {
+        // Handle specific server-side errors (e.g., already joined)
         toast.error(data.message || "Failed to join challenge.");
       }
     } catch (error) {
       console.error("Error joining challenge:", error);
-      toast.error("Failed to join challenge.");
+      toast.error("An unexpected error occurred while joining.");
     }
   };
+
   // --- Loading State ---
   if (isLoading) {
     return <LoadingSpinner />;
@@ -114,7 +123,20 @@ export default function ChallengeDetails() {
     <div className="min-h-screen bg-white">
       {/* Container for main content, using max-w-6xl for better professionalism */}
       <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
-        {/* Back Button (Professional Style) */}
+        {/* --- FIXED: Back Button (Using navigate(-1) for robust routing) --- */}
+        <button
+          onClick={() => navigate(-1)} // FIXED: Uses history stack to go back one step
+          className="cursor-pointer inline-flex items-center justify-center mb-8 
+             bg-gradient-to-r from-green-600 to-lime-500 
+             text-green-950 font-black px-6 py-3 rounded-xl uppercase 
+             tracking-widest shadow-xl shadow-lime-500/40 
+             transition-all duration-500 ease-out group 
+             transform hover:scale-[1.03] hover:-translate-x-1 
+             hover:shadow-[0_0_20px_4px_rgba(163,230,53,0.8)]"
+        >
+          <ArrowLeft className="w-5 h-5 mr-3 -ml-1 transition-transform duration-500 group-hover:translate-x-0" />
+          GO BACK
+        </button>
 
         <div className="lg:flex lg:space-x-10">
           {/* Left Column: Image and Main Info */}
@@ -147,6 +169,7 @@ export default function ChallengeDetails() {
             {/* Call to Action - Join Button (Floating on Mobile) */}
             <div className="sticky bottom-0 left-0 right-0 p-4 bg-white/95 backdrop-blur-sm shadow-2xl lg:hidden z-10">
               <motion.button
+                onClick={handleJoinButtonClick} // Added join handler to mobile button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full bg-green-600 hover:bg-green-700 text-white font-bold text-lg py-3 rounded-xl transition duration-300 shadow-lg"
@@ -256,6 +279,7 @@ export default function ChallengeDetails() {
                 </motion.button>
               ) : (
                 <motion.button
+                  onClick={() => navigate("/login")} // Direct users to login
                   whileHover={{
                     scale: 1.05,
                     boxShadow: "0 10px 15px -3px rgba(16, 185, 129, 0.5)",
