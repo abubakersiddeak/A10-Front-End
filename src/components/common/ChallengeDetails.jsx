@@ -50,6 +50,7 @@ export default function ChallengeDetails() {
     fetchdata();
   }, [id]);
   const handleJoinButtonClick = async () => {
+    const token = await currentUser.getIdToken();
     const challengeId = challenge._id;
     const userId = dbUser._id;
     console.log(challengeId, userId);
@@ -60,7 +61,10 @@ export default function ChallengeDetails() {
         }/api/challenges/join/${challengeId}`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify({ userId }),
         }
       );
@@ -68,7 +72,9 @@ export default function ChallengeDetails() {
       const data = await response.json();
       console.log("Server Response:", data);
 
-      toast.success("Join Challenge Successfully!");
+      if (!data) {
+        toast.success("Join Challenge Successfully!");
+      }
     } catch (error) {
       console.error("Error joining challenge:", error);
       toast.error("Failed to join challenge.");
