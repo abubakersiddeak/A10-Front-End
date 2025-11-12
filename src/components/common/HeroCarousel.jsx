@@ -54,7 +54,9 @@ export default function HeroCarousel() {
     const fetchdata = async () => {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_BACKEND_DOMAIN}/api/challenges`
+          `${
+            import.meta.env.VITE_BACKEND_DOMAIN
+          }/api/challenges/top-participants`
         );
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);

@@ -72,8 +72,10 @@ export default function ChallengeDetails() {
       const data = await response.json();
       console.log("Server Response:", data);
 
-      if (!data) {
-        toast.success("Join Challenge Successfully!");
+      if (response.ok) {
+        toast.success(data.message || "Joined challenge successfully!");
+      } else {
+        toast.error(data.message || "Failed to join challenge.");
       }
     } catch (error) {
       console.error("Error joining challenge:", error);
