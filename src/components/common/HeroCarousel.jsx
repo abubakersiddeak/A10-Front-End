@@ -1,16 +1,54 @@
 import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination } from "swiper/modules";
+import { Autoplay, Pagination, EffectCoverflow } from "swiper/modules";
 
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/autoplay";
-import { Link } from "react-router";
+import "swiper/css/effect-coverflow";
+import { Link } from "react-router-dom";
+
+// --- Custom CSS required for advanced spatial/glow effects (Assume these are defined globally) ---
+/* .challenge-card {
+    // Defines a persistent 3D-like perspective 
+    transform-style: preserve-3d;
+}
+
+.glow-ring {
+    content: '';
+    position: absolute;
+    width: 90%;
+    height: 90%;
+    top: 5%;
+    left: 5%;
+    border-radius: 1.5rem;
+    // Creates a blurred light ring that sits behind the content
+    filter: blur(25px);
+    opacity: 0;
+    transition: opacity 1.2s ease-out;
+    background: radial-gradient(circle at center, rgba(163, 230, 53, 0.4) 0%, transparent 70%);
+    z-index: 0; 
+    pointer-events: none;
+}
+
+.challenge-card:hover .glow-ring {
+    opacity: 1; // Fades in the subtle holographic glow on hover
+}
+
+.button-pulse {
+    animation: button-glow 1.5s infinite alternate;
+}
+
+@keyframes button-glow {
+    from { box-shadow: 0 0 10px rgba(163, 230, 53, 0.5), 0 0 20px rgba(163, 230, 53, 0.2); }
+    to { box-shadow: 0 0 15px rgba(163, 230, 53, 0.7), 0 0 30px rgba(163, 230, 53, 0.4); }
+}
+*/
 
 export default function HeroCarousel() {
-  const swiperModules = [Autoplay, Pagination];
-  const [challenges, setChallenge] = useState([]);
+  const swiperModules = [Autoplay, Pagination, EffectCoverflow];
+  const [challenges, setChallenges] = useState([]);
 
   useEffect(() => {
     const fetchdata = async () => {
@@ -18,10 +56,13 @@ export default function HeroCarousel() {
         const res = await fetch(
           `${import.meta.env.VITE_BACKEND_DOMAIN}/api/challenges`
         );
-        const challenge = await res.json();
-        setChallenge(challenge);
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const data = await res.json();
+        setChallenges(data);
       } catch (error) {
-        console.log(error);
+        console.error("Failed to fetch challenges:", error);
       }
     };
     fetchdata();
@@ -29,73 +70,113 @@ export default function HeroCarousel() {
 
   if (!challenges || challenges.length === 0)
     return (
-      <div className="w-full max-w-6xl mx-auto mt-8 px-4 text-center text-gray-500">
-        No active challenges to display.
+      <div className="w-full max-w-6xl mx-auto mt-12 px-4 text-center text-gray-500 font-sans p-20 bg-gray-950/90 rounded-[3rem] shadow-4xl border border-green-700/50">
+        <p className="text-3xl font-light text-green-400">
+          🌌{" "}
+          <span className="font-extrabold text-lime-300">Hypersleep Mode:</span>{" "}
+          New data streams loading. Please stand by.
+        </p>
       </div>
     );
 
   return (
-    <div className="w-full max-w-7xl mx-auto mt-12 px-4 md:px-6">
+    <div
+      className="w-full max-w-8xl mx-auto mt-15 "
+      // Added particle noise background for ultimate dark-mode texture
+      style={{
+        backgroundImage:
+          'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48ZmlsdGVyIGlkPSJuIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjQiIG51bU9jdGF2ZXM9IjIiIHNlZWQ9IjkiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMDEwMjA0Ii8+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI24pIiBvcGFjaXR5PSIuMDgiLz48L3N2Zy4")',
+        backgroundBlendMode: "overlay",
+      }}
+    >
+      {/* Holographic Title with Z-Axis Shift */}
+
       <Swiper
         modules={swiperModules}
-        spaceBetween={25}
-        slidesPerView={1}
+        effect={"coverflow"}
+        grabCursor={true}
+        centeredSlides={true}
+        slidesPerView={"auto"}
         loop={true}
+        coverflowEffect={{
+          rotate: 0,
+          stretch: 0,
+          depth: 200, // Maximum 3D depth
+          modifier: 3.5, // Extreme 3D flow
+          slideShadows: false,
+        }}
         autoplay={{
-          delay: 4000,
+          delay: 1800, // Very fast, continuous motion
           disableOnInteraction: false,
         }}
         pagination={{
           clickable: true,
-          // Custom styling for light theme: dark bullets, bright active bullet
           bulletClass:
-            "swiper-pagination-bullet bg-gray-400 w-2 h-2 rounded-full mx-1 transition-all duration-300",
+            "swiper-pagination-bullet bg-gray-600/40 w-2.5 h-2.5 rounded-full mx-2 transition-all duration-1500 transform hover:scale-[2.5]",
           bulletActiveClass:
-            "swiper-pagination-bullet-active !bg-green-600 w-6", // Vibrant green accent
+            "swiper-pagination-bullet-active !bg-lime-300 !w-14 h-3 shadow-lime-300/90 shadow-[0_0_15px_6px] rounded-full",
         }}
-        // Light Theme Container Styling: Clean white background with subtle shadow/border
-        className="hero-swiper-light rounded-xl p-6 md:p-4   "
+        className="hero-swiper-hyper-organic py-28"
         breakpoints={{
-          640: { slidesPerView: 1 },
-          768: { slidesPerView: 2, spaceBetween: 30 },
-          1280: { slidesPerView: 3, spaceBetween: 40 },
+          640: { slidesPerView: 1.2 },
+          768: { slidesPerView: 2.3, spaceBetween: 10 },
+          1280: { slidesPerView: 3.3, spaceBetween: 20 },
         }}
       >
         {challenges.map((challenge) => (
-          <SwiperSlide key={challenge._id || challenge.title}>
-            <div
-              // Light Theme Slide Styling: White card with clean shadow and green hover highlight
-              className="relative w-full h-96 xl:h-112 rounded-xl overflow-hidden  border border-green-300
-                           hover:border-green-500 transition-all duration-500 ease-in-out cursor-pointer group 
-                           hover:shadow-green-200"
-            >
-              {/* Image without heavy filter */}
-              <img
-                src={challenge.imageUrl}
-                alt={challenge.title}
-                // Image is clearer, slightly softer opacity for text readability
-                className="w-full h-full object-cover opacity-95 group-hover:opacity-100 transition-opacity duration-500"
-              />
+          <SwiperSlide
+            key={challenge._id || challenge.title}
+            className="!w-[320px] md:!w-[450px] perspective-1200"
+          >
+            <Link to={`/challenge/${challenge._id}`} className="block h-full">
+              <div
+                // Core Card Styling: Adds z-axis transition for hover lift
+                className="challenge-card relative w-full h-96 xl:h-112 rounded-[2rem] overflow-hidden 
+                           shadow-4xl shadow-black/90 border border-green-800/50 
+                           transition-all duration-[1200ms] ease-out-quint 
+                           hover:shadow-[0_40px_80px_-20px_rgba(163,230,53,0.9)] hover:translate-z-8 hover:-translate-y-4 group"
+              >
+                {/* Holographic Glow Ring (Invisible on init, fades in on hover) */}
+                <div className="glow-ring absolute"></div>
 
-              {/* Modern Light Glassmorphism Overlay Card */}
-              <div className="absolute inset-0 flex items-end p-4 sm:p-6 bg-linear-to-t from-black/60 to-transparent rounded-b-xl">
-                <div className="w-full">
-                  {/* Title */}
-                  <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-white mb-3 sm:mb-4 leading-snug drop-shadow-lg">
+                {/* Image Layer: Darkened for better contrast, maximum saturation */}
+                <img
+                  src={challenge.imageUrl}
+                  alt={challenge.title}
+                  className="w-full h-full object-cover transition-all duration-[1200ms] 
+                             group-hover:scale-[1.25] brightness-[0.7] saturate-[1.4] group-hover:brightness-[0.9] group-hover:saturate-[1.5]"
+                  style={{ filter: "hue-rotate(-15deg) contrast(1.1)" }}
+                />
+
+                {/* Hyper-Organic Data Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/98 via-black/60 to-transparent p-10 flex flex-col justify-end rounded-[2rem]">
+                  {/* Status Chip (Glows with the button) */}
+                  <div
+                    className="inline-block px-5 py-2 mb-6 text-xs font-mono uppercase tracking-[0.2em] text-green-950 
+                                    bg-lime-400 rounded-xl shadow-xl shadow-lime-400/70 transform skew-x-[-10deg] transition-all duration-500 hover:skew-x-0"
+                  >
+                    <span className="skew-x-[10deg] font-black">Running</span>
+                  </div>
+
+                  {/* Title (Kinetic Typography) */}
+                  <h2
+                    className="text-3xl sm:text-4xl font-black text-white mb-8 leading-tight drop-shadow-lg font-sans transition-all duration-500
+                                 transform group-hover:tracking-wider group-hover:text-lime-300"
+                  >
                     {challenge.title}
                   </h2>
 
-                  {/* View Challenge Button */}
-                  <Link
-                    to={`/challenge/${challenge._id}`}
-                    className="block w-full text-center bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg 
-                 shadow-lg shadow-green-400/30 uppercase tracking-wider transition-all duration-300 transform hover:-translate-y-1"
+                  {/* Button: Constant Bio-Pulse */}
+                  <button
+                    className="cursor-pointer w-full text-center bg-lime-400 hover:bg-lime-300 text-green-950 font-black text-xl py-5 rounded-xl
+                               uppercase tracking-widest transition-all duration-300 
+                               transform hover:scale-[1.03] active:scale-[0.96] focus:outline-none ring-4 ring-lime-400/0 hover:ring-lime-400/60 button-pulse"
                   >
-                    View Challenge
-                  </Link>
+                    View Details
+                  </button>
                 </div>
               </div>
-            </div>
+            </Link>
           </SwiperSlide>
         ))}
       </Swiper>
