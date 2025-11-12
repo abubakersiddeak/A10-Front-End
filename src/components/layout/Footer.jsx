@@ -16,13 +16,13 @@ export default function Footer() {
     {
       name: "Facebook",
       icon: Facebook,
-      url: "#",
+      url: "https://www.facebook.com/abubakar.siddeak",
       color: "hover:text-blue-500",
     },
     {
       name: "LinkedIn",
       icon: Linkedin,
-      url: "#",
+      url: "https://www.linkedin.com/in/abubaker-siddik-zisan/",
       color: "hover:text-cyan-400",
     },
     {
@@ -109,7 +109,7 @@ export default function Footer() {
                   href="mailto:support@ecotrack.com"
                   className="hover:text-green-300 transition-colors"
                 >
-                  support@ecotrack.com
+                  abubakersiddeak@gmail.com
                 </a>
               </p>
             </div>

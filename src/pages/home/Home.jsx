@@ -6,7 +6,6 @@ import WhyGoGreen from "../../components/common/WhyGoGreen";
 import RecentTripAndUpcommingEvent from "../../components/common/RecentTripAndUpcommingEvent";
 import HowItWorks from "../../components/common/HowItWorks";
 import GlobalImpactTracked from "../../components/common/GlobalImpactTracked";
-import ChallengeFilter from "../../components/common/ChallengeFilter";
 
 export default function Home() {
   return (
@@ -17,7 +16,6 @@ export default function Home() {
 
           <HeroCarousel />
         </section>
-        <ChallengeFilter />
 
         <GlobalImpactTracked />
 
