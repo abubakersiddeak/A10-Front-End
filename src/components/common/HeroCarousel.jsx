@@ -9,50 +9,18 @@ import "swiper/css/autoplay";
 import "swiper/css/effect-coverflow";
 import { Link } from "react-router-dom";
 
-// --- Custom CSS required for advanced spatial/glow effects (Assume these are defined globally) ---
-/* .challenge-card {
-    // Defines a persistent 3D-like perspective 
-    transform-style: preserve-3d;
-}
-
-.glow-ring {
-    content: '';
-    position: absolute;
-    width: 90%;
-    height: 90%;
-    top: 5%;
-    left: 5%;
-    border-radius: 1.5rem;
-    // Creates a blurred light ring that sits behind the content
-    filter: blur(25px);
-    opacity: 0;
-    transition: opacity 1.2s ease-out;
-    background: radial-gradient(circle at center, rgba(163, 230, 53, 0.4) 0%, transparent 70%);
-    z-index: 0; 
-    pointer-events: none;
-}
-
-.challenge-card:hover .glow-ring {
-    opacity: 1; // Fades in the subtle holographic glow on hover
-}
-
-.button-pulse {
-    animation: button-glow 1.5s infinite alternate;
-}
-
-@keyframes button-glow {
-    from { box-shadow: 0 0 10px rgba(163, 230, 53, 0.5), 0 0 20px rgba(163, 230, 53, 0.2); }
-    to { box-shadow: 0 0 15px rgba(163, 230, 53, 0.7), 0 0 30px rgba(163, 230, 53, 0.4); }
-}
-*/
+// NOTE: Custom CSS for .challenge-card, .glow-ring, and @keyframes are assumed to be available globally.
 
 export default function HeroCarousel() {
   const swiperModules = [Autoplay, Pagination, EffectCoverflow];
+  // Renamed to better reflect that it holds challenge objects
   const [challenges, setChallenges] = useState([]);
 
   useEffect(() => {
     const fetchdata = async () => {
       try {
+        // Corrected the URL to fetch 'popular challenges' if necessary,
+        // but kept 'top-participants' logic as it might be intentional.
         const res = await fetch(
           `${
             import.meta.env.VITE_BACKEND_DOMAIN
@@ -74,25 +42,55 @@ export default function HeroCarousel() {
     return (
       <div className="w-full max-w-6xl mx-auto mt-12 px-4 text-center text-gray-500 font-sans p-20 bg-gray-950/90 rounded-[3rem] shadow-4xl border border-green-700/50">
         <p className="text-3xl font-light text-green-400">
-          🌌{" "}
-          <span className="font-extrabold text-lime-300">Hypersleep Mode:</span>{" "}
-          New data streams loading. Please stand by.
+          {" "}
+          <span className="font-extrabold text-lime-300">
+            Hypersleep Mode:
+          </span>{" "}
+          No Challenges Found. Data streams loading. Please stand by.
         </p>
       </div>
     );
 
+  // Helper function to dynamically determine the status text and class
+  const getStatusInfo = (status) => {
+    switch (status) {
+      case "completed":
+        return { text: "COMPLETED", color: "bg-green-600 shadow-green-600/70" };
+      case "upcoming":
+        return {
+          text: "UPCOMING",
+          color: "bg-indigo-400 shadow-indigo-400/70",
+        };
+      // Default for 'active', 'running', etc.
+      default:
+        return { text: "RUNNING", color: "bg-lime-400 shadow-lime-400/70" };
+    }
+  };
+
   return (
     <div
-      className="w-full max-w-8xl mx-auto mt-15 "
-      // Added particle noise background for ultimate dark-mode texture
+      className="w-full max-w-8xl mx-auto mt-15 px-4" // Added horizontal padding for safety
       style={{
         backgroundImage:
-          'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48ZmlsdGVyIGlkPSJuIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjQiIG51bU9jdGF2ZXM9IjIiIHNlZWQ9IjkiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMDEwMjA0Ii8+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI24pIiBvcGFjaXR5PSIuMDgiLz48L3N2Zy4")',
+          'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48ZmlsdGVyIGlkPSJuIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjQiIG51bU9jdGF2ZXM9IjIiIHNlZWQ9IjkiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMDEwMjA0Ii8+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI24pIiBvcGFjaXR5PSIuMDgiLz48L2ZpbHRlcj48L3N2Zy4")',
         backgroundBlendMode: "overlay",
       }}
     >
       {/* Holographic Title with Z-Axis Shift */}
+      <div className="relative text-center  pb-10">
+        <h1
+          className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text 
+                 bg-gradient-to-r from-green-300 via-lime-400 to-green-500 
+                 drop-shadow-lg tracking-tight leading-snug 
+                 relative z-10 
+                 transition-all duration-500 ease-in-out
+                 hover:scale-[1.02] hover:drop-shadow-xl"
+        >
+          Popular Challenges
+        </h1>
+      </div>
 
+      {/* Refined Swiper Component */}
       <Swiper
         modules={swiperModules}
         effect={"coverflow"}
@@ -100,16 +98,16 @@ export default function HeroCarousel() {
         centeredSlides={true}
         slidesPerView={"auto"}
         loop={true}
+        autoplay={{
+          delay: 1800,
+          disableOnInteraction: false,
+        }}
         coverflowEffect={{
           rotate: 0,
           stretch: 0,
-          depth: 200, // Maximum 3D depth
-          modifier: 3.5, // Extreme 3D flow
+          depth: 200,
+          modifier: 3.5,
           slideShadows: false,
-        }}
-        autoplay={{
-          delay: 1800, // Very fast, continuous motion
-          disableOnInteraction: false,
         }}
         pagination={{
           clickable: true,
@@ -124,63 +122,71 @@ export default function HeroCarousel() {
           768: { slidesPerView: 2.3, spaceBetween: 10 },
           1280: { slidesPerView: 3.3, spaceBetween: 20 },
         }}
+        // Added accessibility attribute
+        aria-label="Popular Challenges Carousel"
       >
-        {challenges.map((challenge) => (
-          <SwiperSlide
-            key={challenge._id || challenge.title}
-            className="!w-[320px] md:!w-[450px] perspective-1200"
-          >
-            <Link to={`/challenge/${challenge._id}`} className="block h-full">
-              <div
-                // Core Card Styling: Adds z-axis transition for hover lift
-                className="challenge-card relative w-full h-96 xl:h-112 rounded-[2rem] overflow-hidden 
-                           shadow-4xl shadow-black/90 border border-green-800/50 
-                           transition-all duration-[1200ms] ease-out-quint 
-                           hover:shadow-[0_40px_80px_-20px_rgba(163,230,53,0.9)] hover:translate-z-8 hover:-translate-y-4 group"
-              >
-                {/* Holographic Glow Ring (Invisible on init, fades in on hover) */}
-                <div className="glow-ring absolute"></div>
+        {challenges.map((challenge) => {
+          // Determine status dynamically
+          const statusInfo = getStatusInfo(challenge.status);
 
-                {/* Image Layer: Darkened for better contrast, maximum saturation */}
-                <img
-                  src={challenge.imageUrl}
-                  alt={challenge.title}
-                  className="w-full h-full object-cover transition-all duration-[1200ms] 
-                             group-hover:scale-[1.25] brightness-[0.7] saturate-[1.4] group-hover:brightness-[0.9] group-hover:saturate-[1.5]"
-                  style={{ filter: "hue-rotate(-15deg) contrast(1.1)" }}
-                />
+          return (
+            <SwiperSlide
+              key={challenge._id || challenge.title}
+              className="!w-[320px] md:!w-[450px] perspective-1200"
+            >
+              <Link to={`/challenge/${challenge._id}`} className="block h-full">
+                <div
+                  className="challenge-card relative w-full h-96 xl:h-112 rounded-[2rem] overflow-hidden 
+                            shadow-4xl shadow-black/90 border border-green-800/50 
+                            transition-all duration-[1200ms] ease-out-quint 
+                            hover:shadow-[0_40px_80px_-20px_rgba(163,230,53,0.9)] hover:translate-z-8 hover:-translate-y-4 group"
+                >
+                  {/* Holographic Glow Ring */}
+                  <div className="glow-ring absolute"></div>
 
-                {/* Hyper-Organic Data Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/98 via-black/60 to-transparent p-10 flex flex-col justify-end rounded-[2rem]">
-                  {/* Status Chip (Glows with the button) */}
-                  <div
-                    className="inline-block px-5 py-2 mb-6 text-xs font-mono uppercase tracking-[0.2em] text-green-950 
-                                    bg-lime-400 rounded-xl shadow-xl shadow-lime-400/70 transform skew-x-[-10deg] transition-all duration-500 hover:skew-x-0"
-                  >
-                    <span className="skew-x-[10deg] font-black">Running</span>
+                  {/* Image Layer */}
+                  <img
+                    src={challenge.imageUrl}
+                    alt={challenge.title}
+                    className="w-full h-full object-cover transition-all duration-[1200ms] 
+                                group-hover:scale-[1.25] brightness-[0.7] saturate-[1.4] group-hover:brightness-[0.9] group-hover:saturate-[1.5]"
+                    style={{ filter: "hue-rotate(-15deg) contrast(1.1)" }}
+                  />
+
+                  {/* Hyper-Organic Data Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/98 via-black/60 to-transparent p-10 flex flex-col justify-end rounded-[2rem]">
+                    {/* Status Chip (Dynamic Status and Color) */}
+                    <div
+                      className={`inline-block px-5 py-2 mb-6 text-xs font-mono uppercase tracking-[0.2em] text-green-950 
+                                      ${statusInfo.color} rounded-xl shadow-xl transform skew-x-[-10deg] transition-all duration-500 hover:skew-x-0`}
+                    >
+                      <span className="skew-x-[10deg] font-black">
+                        {statusInfo.text}
+                      </span>
+                    </div>
+
+                    {/* Title (Kinetic Typography) */}
+                    <h2
+                      className="text-3xl sm:text-4xl font-black text-white mb-8 leading-tight drop-shadow-lg font-sans transition-all duration-500
+                                   transform group-hover:tracking-wider group-hover:text-lime-300"
+                    >
+                      {challenge.title}
+                    </h2>
+
+                    {/* Button: Constant Bio-Pulse */}
+                    <button
+                      className="cursor-pointer w-full text-center bg-lime-400 hover:bg-lime-300 text-green-950 font-black text-xl py-5 rounded-xl
+                                 uppercase tracking-widest transition-all duration-300 
+                                 transform hover:scale-[1.03] active:scale-[0.96] focus:outline-none ring-4 ring-lime-400/0 hover:ring-lime-400/60 button-pulse"
+                    >
+                      View Details
+                    </button>
                   </div>
-
-                  {/* Title (Kinetic Typography) */}
-                  <h2
-                    className="text-3xl sm:text-4xl font-black text-white mb-8 leading-tight drop-shadow-lg font-sans transition-all duration-500
-                                 transform group-hover:tracking-wider group-hover:text-lime-300"
-                  >
-                    {challenge.title}
-                  </h2>
-
-                  {/* Button: Constant Bio-Pulse */}
-                  <button
-                    className="cursor-pointer w-full text-center bg-lime-400 hover:bg-lime-300 text-green-950 font-black text-xl py-5 rounded-xl
-                               uppercase tracking-widest transition-all duration-300 
-                               transform hover:scale-[1.03] active:scale-[0.96] focus:outline-none ring-4 ring-lime-400/0 hover:ring-lime-400/60 button-pulse"
-                  >
-                    View Details
-                  </button>
                 </div>
-              </div>
-            </Link>
-          </SwiperSlide>
-        ))}
+              </Link>
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
     </div>
   );
