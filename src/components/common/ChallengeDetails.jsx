@@ -51,7 +51,6 @@ export default function ChallengeDetails() {
   }, [id]);
 
   const handleJoinButtonClick = async () => {
-    // Check if user is logged in before continuing
     if (!currentUser || !dbUser) {
       toast.info("Please login or sign up to join a challenge.");
       return;
@@ -80,9 +79,12 @@ export default function ChallengeDetails() {
 
       if (response.ok) {
         toast.success(data.message || "Joined challenge successfully!");
-        // Optional: Refetch challenge data here to update participant count locally
+
+        setChallenge((prev) => ({
+          ...prev,
+          participants: prev.participants + 1,
+        }));
       } else {
-        // Handle specific server-side errors (e.g., already joined)
         toast.error(data.message || "Failed to join challenge.");
       }
     } catch (error) {
