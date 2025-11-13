@@ -1,63 +1,23 @@
-# Project Name: SkillSwap
+# EcoTrack 🌍
 
-## Live URL
+**Live Site:** [ Live Site URL Here](https://ecotrack-a10.netlify.app/)
 
-[SkillSwap Live Website URL Here](https://skillswapzi.netlify.app/)
+EcoTrack is a platform dedicated to promoting sustainable living by enabling users to participate in eco-friendly challenges, track their progress, and make a positive impact on the environment.
 
-## Project Purpose
+## Features
 
-SkillSwap is a **React single-page application (SPA)** that provides a secure authentication system using **Firebase Authentication**. It also allows users to view, submit, and interact with user reviews in a modern, responsive, and professional interface.
+- **Explore Eco Missions:** Browse and join a variety of environmental challenges designed to reduce waste, save energy, and protect nature.
+- **Participant Progress Tracking:** Track your progress in challenges, including steps completed, progress percentage, and last updated time.
+- **Filter & Search Challenges:** Easily filter challenges by category, date, and number of participants to find the right mission for you.
+- **Visual Challenge Cards:** Interactive challenge cards display key information such as target, duration, participants, and impact metrics.
+- **Responsive Design:** Fully responsive UI ensures a smooth experience across mobile, tablet, and desktop devices.
+- **Impact Metrics:** See the tangible impact of each challenge, from water conservation to reducing carbon footprint.
+- **User-Friendly Interface:** Clean, modern, and intuitive design powered by React, Tailwind CSS, and Framer Motion.
 
-The main purpose of this project is to demonstrate:
+## Tech Stack
 
-- Protected routes with Firebase authentication
-- Dynamic redirection after login
-- Responsive and futuristic UI with animations
-- Smooth user experience across devices
-
-## Key Features
-
-- **User Authentication**
-
-  - Email/Password login
-  - Google Sign-in integration
-  - Protected routes
-  - Redirect to requested page after login
-
-- **Responsive Layout**
-  - Fully responsive across mobile, tablet, and desktop
-  - Modern card design with hover effects
-
-## NPM Packages Used
-
-### Dependencies
-
-- `react` – Frontend library
-- `react-dom` – React DOM renderer
-- `react-router` – Client-side routing
-- `firebase` – Authentication & backend services
-- `animate.css` – CSS animations
-- `framer-motion` – Advanced animations
-- `gsap` – Professional animation library
-- `lucide-react` – Icons
-- `react-toastify` – Toast notifications
-- `tailwindcss` – Utility-first CSS framework
-- `@tailwindcss/vite` – Tailwind plugin for Vite
-- `swiper` – Carousel
-
-### DevDependencies
-
-- `vite` – Dev server and bundler
-- `@vitejs/plugin-react` – React plugin for Vite
-- `daisyui` – Tailwind component library
-- `eslint` + plugins – Linting for React
-
----
-
-## Installation & Running Locally
-
-1. **Clone the repository**
-
-```bash
-git clone https://github.com/programming-hero-web-course2/b12-a9-firesheild-abubakersiddeak.git
-```
+- **Frontend:** React, Vite, Tailwind CSS, Framer Motion
+- **Backend:** Node.js, Express.js
+- **Database:** MongoDB
+- **Authentication:** Firebase
+- **Icons & UI Components:** Lucide React
