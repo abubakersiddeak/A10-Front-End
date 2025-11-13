@@ -72,7 +72,7 @@ export default function HeroCarousel() {
 
   return (
     <div
-      className="w-full  max-w-8xl mx-auto md:mt-5 px-6 " // Added horizontal padding for safety
+      className="w-full  max-w-8xl mx-auto  md:px-6 "
       style={{
         backgroundImage:
           'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48ZmlsdGVyIGlkPSJuIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjQiIG51bU9jdGF2ZXM9IjIiIHNlZWQ9IjkiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMDEwMjA0Ii8+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI24pIiBvcGFjaXR5PSIuMDgiLz48L2ZpbHRlcj48L3N2Zy4")',
@@ -80,16 +80,9 @@ export default function HeroCarousel() {
       }}
     >
       {/* Holographic Title with Z-Axis Shift */}
-      <div className="relative text-center  pb-10">
-        <h1
-          className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text 
-                 bg-gradient-to-r from-green-300 via-lime-400 to-green-500 
-                 drop-shadow-lg tracking-tight leading-snug 
-                 relative z-10 
-                 transition-all duration-500 ease-in-out
-                 hover:scale-[1.02] hover:drop-shadow-xl"
-        >
-          Popular Challenges
+      <div className="text-center pb-6">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-lime-300 to-green-500 drop-shadow-lg tracking-tight leading-snug animate-pulse">
+          Popular Eco Challenges 🌿
         </h1>
       </div>
 
@@ -119,7 +112,7 @@ export default function HeroCarousel() {
           bulletActiveClass:
             "swiper-pagination-bullet-active !bg-lime-300 !w-14 h-3 shadow-lime-300/90 shadow-[0_0_15px_6px] rounded-full",
         }}
-        className="hero-swiper-hyper-organic py-28"
+        className="hero-swiper-hyper-organic py-0 md:py-8 h-[60vh] md:h-[70vh]"
         breakpoints={{
           640: { slidesPerView: 1.2 },
           768: { slidesPerView: 2.3, spaceBetween: 10 },
@@ -135,7 +128,7 @@ export default function HeroCarousel() {
           return (
             <SwiperSlide
               key={challenge._id || challenge.title}
-              className="!w-[320px] md:!w-[450px] perspective-1200"
+              className="!w-[280px] md:!w-[450px] perspective-1200"
             >
               <Link to={`/challenge/${challenge._id}`} className="block h-full">
                 <div

@@ -4,9 +4,7 @@ import {
   Leaf,
   User,
   Target,
-  Activity,
   PlusCircle,
-  Heart,
   Settings,
   Brain,
   Menu, // Added for mobile menu toggle
@@ -62,12 +60,11 @@ export default function Dashboard() {
   const { dbUser } = useContext(AuthContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // Helper function to render NavLink with active styling
   const getNavLinkClass = ({ isActive }) =>
     `flex items-center gap-4 p-3 rounded-xl transition-all duration-300 font-medium text-lg 
      ${
        isActive
-         ? "bg-gradient-to-r from-emerald-400 to-green-500 text-white shadow-lg transform translate-x-1" // Futuristic gradient + subtle transform
+         ? "bg-gradient-to-r from-emerald-400 to-green-500 text-white shadow-lg transform translate-x-1"
          : "text-gray-600 hover:text-emerald-600 hover:bg-green-50/70"
      }`;
 
@@ -81,12 +78,12 @@ export default function Dashboard() {
 
       <Navbar />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <div className="relative z-10 max-w-7xl mx-auto px-1 md:px-6 lg:px-8 py-8 md:py-12">
         {/* Header/Title Block - Enhanced for professional, eco-futuristic feel */}
-        <header className="mb-10 pb-6 border-b border-gray-200 flex flex-col md:flex-row md:items-center md:justify-between">
+        <header className="mb-10 md:px-0 px-4 pb-6 border-b border-gray-200 flex flex-col md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-4">
             <Leaf className="w-10 h-10 text-emerald-500 animate-pulse-slow" />
-            <h2 className="text-5xl font-extrabold text-gray-900 tracking-tight leading-tight">
+            <h2 className="lg:text-5xl text-3xl font-extrabold text-gray-900 tracking-tight leading-tight">
               Your Dashboard
             </h2>
           </div>
@@ -145,7 +142,7 @@ export default function Dashboard() {
           </aside>
 
           {/* MAIN CONTENT AREA (The components load here) */}
-          <main className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-100 p-8 lg:p-10 min-h-[70vh] transform transition-all duration-300 hover:shadow-blue-300/40">
+          <main className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-100  lg:p-8 min-h-[70vh] transform transition-all duration-300 hover:shadow-blue-300/40">
             <Outlet />
           </main>
         </div>
