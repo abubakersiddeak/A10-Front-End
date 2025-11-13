@@ -35,7 +35,30 @@ export default function GlobalImpactTracked() {
     fetchData();
   }, []);
 
-  if (loading) return <p className="text-center">Loading live stats...</p>;
+  if (loading)
+    return (
+      <section className="mb-16 bg-gradient-to-b from-green-50 to-green-100 p-10 rounded-3xl shadow-lg border border-green-200 animate-pulse">
+        <div className="h-10 w-80 mx-auto mb-8 bg-gradient-to-r from-green-200 via-green-100 to-green-200 rounded-full"></div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {[...Array(3)].map((_, index) => (
+            <div
+              key={index}
+              className="bg-white/80 p-8 rounded-2xl shadow-lg border border-green-200 
+                       transition-transform duration-300 hover:scale-[1.03] hover:shadow-green-400/40"
+            >
+              <div className="flex items-center mb-4">
+                <div className="w-10 h-10 bg-green-200/60 rounded-full mr-4"></div>
+                <div className="h-4 w-32 bg-green-200/50 rounded-lg"></div>
+              </div>
+
+              <div className="h-10 w-40 bg-green-300/40 rounded-lg mb-3"></div>
+              <div className="h-4 w-24 bg-green-200/50 rounded-lg"></div>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
 
   const liveStats = [
     {

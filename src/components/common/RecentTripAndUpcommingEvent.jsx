@@ -18,7 +18,10 @@ export default function RecentTripAndUpcommingEvent() {
           `${import.meta.env.VITE_BACKEND_DOMAIN}/api/tips`
         );
         const data = await res.json();
-        setTips(data);
+        const last5Tips = data
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .slice(0, 5);
+        setTips(last5Tips);
       } catch (error) {
         console.error("Error fetching tips:", error);
       }
@@ -34,9 +37,9 @@ export default function RecentTripAndUpcommingEvent() {
           `${import.meta.env.VITE_BACKEND_DOMAIN}/api/events/upcomming`
         );
         const data = await res.json();
-        setUpcomingEvents(data);
+        setUpcomingEvents(data.slice(0, 5));
       } catch (err) {
-        console.error("Error fetching upcoming challenges:", err);
+        console.error("Error fetching upcoming events:", err);
       }
     };
 

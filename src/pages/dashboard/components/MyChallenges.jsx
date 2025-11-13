@@ -205,7 +205,7 @@ export default function MyChallenges() {
   if (challenges.length === 0)
     return (
       // Responsive Empty State
-      <div className="rounded-2xl bg-green-50 text-center p-4 sm:p-8 flex items-center justify-center">
+      <div className="rounded-2xl  text-center p-4 sm:p-8 flex items-center justify-center">
         <div className="max-w-md mx-auto border border-green-200 bg-white p-6 sm:p-10 rounded-2xl shadow-xl">
           <Leaf className="w-16 h-16 text-green-500 mx-auto mb-4" />
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">

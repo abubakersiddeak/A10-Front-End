@@ -40,14 +40,17 @@ export default function HeroCarousel() {
 
   if (!challenges || challenges.length === 0)
     return (
-      <div className="w-full max-w-6xl mx-auto mt-12 px-4 text-center text-gray-500 font-sans p-20 bg-gray-950/90 rounded-[3rem] shadow-4xl border border-green-700/50">
-        <p className="text-3xl font-light text-green-400">
-          {" "}
-          <span className="font-extrabold text-lime-300">
-            Hypersleep Mode:
-          </span>{" "}
-          No Challenges Found. Data streams loading. Please stand by.
-        </p>
+      <div
+        className="flex justify-center items-center w-full h-[60vh] max-w-8xl mx-auto md:mt-5 px-6 " // Added horizontal padding for safety
+        style={{
+          backgroundImage:
+            'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48ZmlsdGVyIGlkPSJuIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjQiIG51bU9jdGF2ZXM9IjIiIHNlZWQ9IjkiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMDEwMjA0Ii8+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI24pIiBvcGFjaXR5PSIuMDgiLz48L2ZpbHRlcj48L3N2Zy4")',
+          backgroundBlendMode: "overlay",
+        }}
+      >
+        <h1 className="text-7xl text-center text-green-500 font-extrabold">
+          No Challenges Found{" "}
+        </h1>
       </div>
     );
 

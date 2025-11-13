@@ -126,11 +126,45 @@ export default function MyCreateedChallenge() {
     }
   };
 
-  if (loading) return <div>Loading your challenges...</div>;
+  if (loading)
+    return (
+      <div className="max-w-6xl mx-auto p-6 grid md:grid-cols-2 gap-6 animate-pulse">
+        {[...Array(4)].map((_, i) => (
+          <div
+            key={i}
+            className="bg-white rounded-3xl shadow-xl border-t-8 border-green-500 p-5"
+          >
+            <div className="w-full h-48 bg-gray-200 rounded-lg mb-4"></div>
+            <div className="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/3 mb-2"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/4 mb-4"></div>
+            <div className="flex justify-between">
+              <div className="h-10 bg-green-200 rounded w-24"></div>
+              <div className="h-10 bg-red-200 rounded w-24"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   if (!myChallenges.length)
     return (
-      <div className="text-center mt-10">
-        You haven't created any challenges yet.
+      <div className="flex flex-col items-center justify-center mt-16 text-center">
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="flex flex-col items-center justify-center bg-gradient-to-b from-green-50 to-green-100 p-8 rounded-3xl shadow-md border border-green-200 max-w-md"
+        >
+          <Leaf className="w-14 h-14 text-green-600 mb-4 animate-bounce" />
+          <h3 className="text-2xl font-bold text-green-700 mb-2">
+            No Challenges Yet!
+          </h3>
+          <p className="text-gray-600 mb-4">
+            You haven’t created any challenges yet — start one and inspire
+            others 🌱
+          </p>
+        </motion.div>
       </div>
     );
 
@@ -198,7 +232,7 @@ export default function MyCreateedChallenge() {
 
       {/* Edit Modal */}
       {editingChallenge && (
-        <div className=" bg-opacity-50 absolute inset-0 flex items-center bg-white shadow shadow-2xl rounded-2xl justify-center z-50">
+        <div className=" bg-opacity-50  max-h-[1000px] absolute inset-0 flex items-center bg-white  shadow-2xl rounded-2xl justify-center z-50">
           <div className="bg-white rounded-xl p-6 w-full max-w-lg max-h-[90%] overflow-y-auto">
             <h2 className="text-2xl font-bold mb-4">Edit Challenge</h2>
 
