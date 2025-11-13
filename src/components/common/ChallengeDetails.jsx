@@ -5,7 +5,7 @@ import {
   Clock,
   Users,
   Target,
-  ArrowLeft, // Used in the updated link structure
+  ArrowLeft,
   Calendar,
   User,
 } from "lucide-react";
@@ -14,7 +14,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import { AuthContext } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 
-// Helper function for better date formatting (professional detail)
+// Helper for date formatting
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
   const options = { year: "numeric", month: "long", day: "numeric" };
@@ -29,15 +29,14 @@ export default function ChallengeDetails() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Fetch challenge data
   useEffect(() => {
-    const fetchdata = async () => {
+    const fetchData = async () => {
       try {
         const res = await fetch(
           `${import.meta.env.VITE_BACKEND_DOMAIN}/api/challenges/${id}`
         );
-        if (!res.ok) {
-          throw new Error("Failed to fetch challenge data.");
-        }
+        if (!res.ok) throw new Error("Failed to fetch challenge data.");
         const challengeData = await res.json();
         setChallenge(challengeData);
       } catch (err) {
@@ -47,7 +46,7 @@ export default function ChallengeDetails() {
         setIsLoading(false);
       }
     };
-    fetchdata();
+    fetchData();
   }, [id]);
 
   const handleJoinButtonClick = async () => {
@@ -56,22 +55,19 @@ export default function ChallengeDetails() {
       return;
     }
 
-    const token = await currentUser.getIdToken();
-    const challengeId = challenge._id;
-    const userId = dbUser._id;
-
     try {
+      const token = await currentUser.getIdToken();
       const response = await fetch(
-        `${
-          import.meta.env.VITE_BACKEND_DOMAIN
-        }/api/challenges/join/${challengeId}`,
+        `${import.meta.env.VITE_BACKEND_DOMAIN}/api/challenges/join/${
+          challenge._id
+        }`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ userId }),
+          body: JSON.stringify({ userId: dbUser._id }),
         }
       );
 
@@ -79,7 +75,6 @@ export default function ChallengeDetails() {
 
       if (response.ok) {
         toast.success(data.message || "Joined challenge successfully!");
-
         setChallenge((prev) => ({
           ...prev,
           participants: prev.participants + 1,
@@ -87,19 +82,15 @@ export default function ChallengeDetails() {
       } else {
         toast.error(data.message || "Failed to join challenge.");
       }
-    } catch (error) {
-      console.error("Error joining challenge:", error);
+    } catch (err) {
+      console.error(err);
       toast.error("An unexpected error occurred while joining.");
     }
   };
 
-  // --- Loading State ---
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
+  if (isLoading) return <LoadingSpinner />;
 
-  // --- Not Found/Error State ---
-  if (error || !challenge) {
+  if (error || !challenge)
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-green-50 p-6 text-gray-700 text-center">
         <Leaf className="w-12 h-12 text-green-600 mb-4" />
@@ -107,8 +98,7 @@ export default function ChallengeDetails() {
           {error ? `Error: ${error}` : "Challenge not found"} 😔
         </p>
         <p className="mb-6">
-          The challenge with ID **{id}** might have been removed or does not
-          exist.
+          The challenge with ID <strong>{id}</strong> might have been removed.
         </p>
         <button
           onClick={() => navigate("/challenges")}
@@ -118,32 +108,21 @@ export default function ChallengeDetails() {
         </button>
       </div>
     );
-  }
 
-  // --- Main Content ---
   return (
     <div className="min-h-screen bg-white">
-      {/* Container for main content, using max-w-6xl for better professionalism */}
       <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
-        {/* --- FIXED: Back Button (Using navigate(-1) for robust routing) --- */}
         <button
-          onClick={() => navigate(-1)} // FIXED: Uses history stack to go back one step
-          className="cursor-pointer inline-flex items-center justify-center mb-8 
-             bg-gradient-to-r from-green-600 to-lime-500 
-             text-green-950 font-black px-6 py-3 rounded-xl uppercase 
-             tracking-widest shadow-xl shadow-lime-500/40 
-             transition-all duration-500 ease-out group 
-             transform hover:scale-[1.03] hover:-translate-x-1 
-             hover:shadow-[0_0_20px_4px_rgba(163,230,53,0.8)]"
+          onClick={() => navigate(-1)}
+          className="cursor-pointer inline-flex items-center justify-center mb-8  text-green-600 font-black px-6 py-3 rounded-xl uppercase tracking-widest hover:scale-105 duration-800  "
         >
-          <ArrowLeft className="w-5 h-5 mr-3 -ml-1 transition-transform duration-500 group-hover:translate-x-0" />
+          <ArrowLeft className="w-5 h-5 mr-3 -ml-1" />
           GO BACK
         </button>
 
         <div className="lg:flex lg:space-x-10">
-          {/* Left Column: Image and Main Info */}
+          {/* Left Column */}
           <div className="lg:w-2/3">
-            {/* Image Section (Improved Professional Styling) */}
             <motion.img
               src={challenge.imageUrl}
               alt={challenge.title}
@@ -153,7 +132,6 @@ export default function ChallengeDetails() {
               className="w-full h-72 md:h-[450px] object-cover rounded-3xl shadow-xl mb-8"
             />
 
-            {/* Title and Category */}
             <div className="mb-6">
               <span className="inline-block bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-2">
                 {challenge.category || "General Challenge"}
@@ -163,15 +141,34 @@ export default function ChallengeDetails() {
               </h1>
             </div>
 
-            {/* Description */}
             <p className="text-gray-600 text-lg leading-relaxed mb-8 border-l-4 border-green-400 pl-4">
               {challenge.description}
             </p>
 
-            {/* Call to Action - Join Button (Floating on Mobile) */}
+            {/* Steps */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-green-700 mb-4">
+                Challenge Steps ({challenge.totalActions})
+              </h2>
+              <ul className="space-y-3">
+                {challenge.steps?.map((step) => (
+                  <li
+                    key={step.stepNumber}
+                    className="flex items-center gap-3 p-3 bg-green-50 rounded-xl shadow-sm"
+                  >
+                    <span className="text-green-600 font-bold text-lg">
+                      Step {step.stepNumber}:
+                    </span>
+                    <span className="text-gray-700">{step.title}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Mobile Join Button */}
             <div className="sticky bottom-0 left-0 right-0 p-4 bg-white/95 backdrop-blur-sm shadow-2xl lg:hidden z-10">
               <motion.button
-                onClick={handleJoinButtonClick} // Added join handler to mobile button
+                onClick={handleJoinButtonClick}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full bg-green-600 hover:bg-green-700 text-white font-bold text-lg py-3 rounded-xl transition duration-300 shadow-lg"
@@ -181,7 +178,7 @@ export default function ChallengeDetails() {
             </div>
           </div>
 
-          {/* Right Column: Details Card (Sticky on Desktop) */}
+          {/* Right Column */}
           <div className="lg:w-1/3 mt-8 lg:mt-0">
             <motion.div
               initial={{ x: 30, opacity: 0 }}
@@ -193,9 +190,7 @@ export default function ChallengeDetails() {
                 Challenge At A Glance
               </h2>
 
-              {/* Details Grid (Enhanced Styling) */}
               <div className="space-y-4">
-                {/* Duration */}
                 <div className="flex items-start gap-3 p-3 bg-white rounded-xl shadow-sm">
                   <Clock className="w-6 h-6 text-green-600 shrink-0 mt-0.5" />
                   <div>
@@ -208,7 +203,6 @@ export default function ChallengeDetails() {
                   </div>
                 </div>
 
-                {/* Participants */}
                 <div className="flex items-start gap-3 p-3 bg-white rounded-xl shadow-sm">
                   <Users className="w-6 h-6 text-green-600 shrink-0 mt-0.5" />
                   <div>
@@ -221,7 +215,6 @@ export default function ChallengeDetails() {
                   </div>
                 </div>
 
-                {/* Target */}
                 <div className="flex items-start gap-3 p-3 bg-white rounded-xl shadow-sm">
                   <Target className="w-6 h-6 text-green-600 shrink-0 mt-0.5" />
                   <div>
@@ -234,7 +227,6 @@ export default function ChallengeDetails() {
                   </div>
                 </div>
 
-                {/* Impact Metric */}
                 <div className="flex items-start gap-3 p-3 bg-white rounded-xl shadow-sm">
                   <Leaf className="w-6 h-6 text-green-600 shrink-0 mt-0.5" />
                   <div>
@@ -248,44 +240,35 @@ export default function ChallengeDetails() {
                 </div>
               </div>
 
-              {/* Dates & Creator */}
               <div className="mt-8 pt-4 border-t border-green-200 space-y-3 text-gray-600">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-5 h-5 text-green-500" />
-                  <p>**Start:** {formatDate(challenge.startDate)}</p>
+                  <p>Start: {formatDate(challenge.startDate)}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar className="w-5 h-5 text-green-500" />
-                  <p>**End:** {formatDate(challenge.endDate)}</p>
+                  <p>End: {formatDate(challenge.endDate)}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <User className="w-5 h-5 text-green-500" />
-                  <p>
-                    **Created By:** {challenge.createdBy || "Community User"}
-                  </p>
+                  <p>Created By: {challenge.createdBy}</p>
                 </div>
               </div>
 
-              {/* Join Button (Desktop Only) */}
+              {/* Desktop Join Button */}
               {currentUser ? (
                 <motion.button
                   onClick={handleJoinButtonClick}
-                  whileHover={{
-                    scale: 1.05,
-                    boxShadow: "0 10px 15px -3px rgba(16, 185, 129, 0.5)",
-                  }}
+                  whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.97 }}
-                  className="hidden cursor-pointer lg:block mt-8 w-full bg-green-600 hover:bg-green-700 text-white font-bold text-lg py-4 rounded-xl transition duration-300 shadow-md"
+                  className="cursor-pointer hidden lg:block mt-8 w-full bg-green-600 hover:bg-green-700 text-white font-bold text-lg py-4 rounded-xl transition duration-300 shadow-md"
                 >
                   Join Challenge Now
                 </motion.button>
               ) : (
                 <motion.button
-                  onClick={() => navigate("/login")} // Direct users to login
-                  whileHover={{
-                    scale: 1.05,
-                    boxShadow: "0 10px 15px -3px rgba(16, 185, 129, 0.5)",
-                  }}
+                  onClick={() => navigate("/login")}
+                  whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.97 }}
                   className="hidden cursor-pointer lg:block mt-8 w-full bg-green-400 hover:bg-green-700 text-white font-bold text-lg py-4 rounded-xl transition duration-300 shadow-md"
                 >

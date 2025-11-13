@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // Framer Motion Variants
 const containerVariants = {
@@ -32,6 +32,7 @@ export default function MyChallenges() {
   const [challenges, setChallenges] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   // Fetch user's joined challenges
   useEffect(() => {
@@ -105,7 +106,9 @@ export default function MyChallenges() {
       toast.success("Progress updated successfully!");
 
       setChallenges((prev) =>
-        prev.map((c) => (c._id === uc._id ? responseData : c))
+        prev.map((c) =>
+          c._id === uc._id ? { ...responseData, challenge: c.challenge } : c
+        )
       );
     } catch (err) {
       console.error(err);
@@ -144,8 +147,47 @@ export default function MyChallenges() {
 
   if (loading)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-green-50">
-        <LoadingSpinner />
+      <div className="min-h-screen flex flex-col items-center justify-start  py-10">
+        <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          {[1, 2].map((_, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0.5 }}
+              animate={{ opacity: 1 }}
+              transition={{
+                duration: 1,
+                repeat: Infinity,
+                repeatType: "reverse",
+              }}
+              className="bg-white rounded-3xl shadow-xl border-t-8 border-green-500 overflow-hidden animate-pulse"
+            >
+              {/* Image Skeleton */}
+              <div className="w-full h-40 md:h-48 bg-green-200" />
+
+              {/* Content Skeleton */}
+              <div className="p-5 sm:p-6 space-y-4">
+                {/* Title Skeleton */}
+                <div className="h-6 sm:h-8 bg-green-100 rounded w-3/4" />
+
+                {/* Progress Skeleton */}
+                <div className="h-4 bg-green-100 rounded w-full mt-2" />
+
+                {/* Steps Skeleton */}
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="h-8 w-20 bg-green-100 rounded-full"
+                    />
+                  ))}
+                </div>
+
+                {/* Button Skeleton */}
+                <div className="h-10 w-full bg-green-200 rounded-lg mt-4" />
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     );
 
@@ -163,7 +205,7 @@ export default function MyChallenges() {
   if (challenges.length === 0)
     return (
       // Responsive Empty State
-      <div className="rounded-2xl bg-green-50 text-center p-4 sm:p-8 min-h-screen flex items-center justify-center">
+      <div className="rounded-2xl bg-green-50 text-center p-4 sm:p-8 flex items-center justify-center">
         <div className="max-w-md mx-auto border border-green-200 bg-white p-6 sm:p-10 rounded-2xl shadow-xl">
           <Leaf className="w-16 h-16 text-green-500 mx-auto mb-4" />
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
@@ -224,8 +266,8 @@ export default function MyChallenges() {
               <motion.div
                 key={uc._id}
                 variants={itemVariants}
-                className="bg-white rounded-3xl shadow-xl border-t-8 border-green-500 overflow-hidden 
-                         hover:shadow-green-300/80 hover:translate-y-[-2px] transition-all duration-300 ease-out" // Added slight hover lift
+                className="bg-white rounded-3xl flex flex-col justify-between  shadow-xl border-t-8 border-green-500 overflow-hidden 
+                         hover:shadow-green-300/80 hover:translate-y-[-2px] transition-all duration-300 ease-out"
               >
                 {/* Challenge Image */}
                 <div className="w-full h-40 md:h-48 overflow-hidden">
@@ -284,7 +326,7 @@ export default function MyChallenges() {
                         key={idx}
                         onClick={() => handleStepComplete(uc, idx)}
                         // Adjusted padding for better touch target on mobile
-                        className={`px-3 py-2 rounded-full border text-xs sm:text-sm font-medium transition-all shadow-sm flex items-center gap-1 whitespace-nowrap
+                        className={`cursor-pointer hover:scale-105 duration-750 px-3 py-2 rounded-lg border text-xs sm:text-sm font-medium transition-all shadow-sm flex items-center gap-1 whitespace-nowrap
                           ${
                             uc.completedSteps?.includes(idx)
                               ? "bg-green-600 text-white border-green-600"
@@ -301,34 +343,15 @@ export default function MyChallenges() {
                     ))}
                   </div>
 
-                  {/* Info Grid (Responsive 2-column layout) */}
-                  <div className="grid grid-cols-2 gap-y-3 text-xs sm:text-sm text-gray-600 border-t border-green-100 pt-5 mt-6">
-                    <div className="flex items-center gap-2">
-                      <Target className="w-4 h-4 text-green-500 shrink-0" />{" "}
-                      <span className="text-gray-500">Category:</span>{" "}
-                      <span className="font-semibold text-gray-800 truncate">
-                        {challenge?.category || "General"}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-green-500 shrink-0" />{" "}
-                      <span className="text-gray-500">Duration:</span>{" "}
-                      <span className="font-semibold text-gray-800">
-                        {challenge?.duration || "??"} days
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-green-500 shrink-0" />{" "}
-                      <span className="text-gray-500">Joined:</span>{" "}
-                      <span className="font-semibold text-gray-800">
-                        {new Date(uc.joinDate).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Leaf className="w-4 h-4 text-green-500 shrink-0" />{" "}
-                      <span className="text-gray-500">Impact:</span>{" "}
-                      <span className="font-semibold text-gray-800">High</span>
-                    </div>
+                  <div className=" bottom-0 flex justify-center border-t border-green-100 pt-5 mt-6">
+                    <button
+                      className=" cursor-pointer w-full py-2 px-3 rounded-lg bg-green-600 text-white font-bold shadow-green-300 shadow-lg hover:scale-105 duration-750"
+                      onClick={() => {
+                        navigate(`/challenge/${challenge._id}`);
+                      }}
+                    >
+                      Details
+                    </button>
                   </div>
                 </div>
               </motion.div>

@@ -9,26 +9,26 @@ import {
   Heart,
   Settings,
   Brain,
+  Menu, // Added for mobile menu toggle
+  X, // Added for mobile menu close
 } from "lucide-react";
 
-// Import the component you previously created for the default view:
 import { AuthContext } from "../../context/AuthContext";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
 // --- SideBar Links Configuration ---
 const dashboardLinks = [
-  // {
-  //   name: " Activities",
-  //   icon: Activity,
-  //   path: "/dashboard/myactivities",
-  //   end: true,
-  // },
   {
-    name: "My Challenges",
+    name: "Taken Challenges",
     icon: Target,
     path: "/dashboard/myactivities",
     end: true,
+  },
+  {
+    name: " My Challenges",
+    icon: Target,
+    path: "/dashboard/myactivities/mycreateedchallenge",
   },
   {
     name: "My Tips",
@@ -50,16 +50,6 @@ const dashboardLinks = [
     icon: PlusCircle,
     path: "/dashboard/myactivities/createchallenge",
   },
-  {
-    name: "Track Progress",
-    icon: Activity,
-    path: "/dashboard/myactivities/trackprogress",
-  },
-  {
-    name: "My Contributions",
-    icon: Heart,
-    path: "/dashboard/myactivities/mycontributions",
-  },
 
   {
     name: "Profile Settings",
@@ -67,63 +57,77 @@ const dashboardLinks = [
     path: "/dashboard/profile",
   },
 ];
+
 export default function Dashboard() {
   const { dbUser } = useContext(AuthContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Helper function to render NavLink with active styling
   const getNavLinkClass = ({ isActive }) =>
-    `flex items-center gap-3 p-3 rounded-xl transition-all duration-200 font-semibold text-gray-700 
+    `flex items-center gap-4 p-3 rounded-xl transition-all duration-300 font-medium text-lg 
      ${
        isActive
-         ? "bg-green-100 text-green-700 shadow-sm border border-green-200"
-         : "hover:bg-green-50 hover:text-green-600"
+         ? "bg-gradient-to-r from-emerald-400 to-green-500 text-white shadow-lg transform translate-x-1" // Futuristic gradient + subtle transform
+         : "text-gray-600 hover:text-emerald-600 hover:bg-green-50/70"
      }`;
 
   return (
-    // Base layout wrapper with a soft, clean background
-    <div className=" bg-green-50/70 ">
+    // Base layout wrapper with a subtle background pattern for eco-futuristic feel
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 font-inter relative overflow-hidden">
+      {/* Abstract background shapes for a futuristic, eco vibe */}
+      <div className="absolute top-0 left-0 w-64 h-64 bg-emerald-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+      <div className="absolute top-0 right-0 w-64 h-64 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+      <div className="absolute bottom-10 left-32 w-64 h-64 bg-green-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+
       <Navbar />
-      <div className="max-w-7xl mx-auto p-4 sm:p-8">
-        {/* Header/Title Block */}
-        <header className="mb-8 pb-4 border-b border-green-200">
-          <div className="flex items-center gap-3">
-            <Leaf className="w-8 h-8 text-green-600" />
-            <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">
-              Eco Hero Activities
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        {/* Header/Title Block - Enhanced for professional, eco-futuristic feel */}
+        <header className="mb-10 pb-6 border-b border-gray-200 flex flex-col md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-4">
+            <Leaf className="w-10 h-10 text-emerald-500 animate-pulse-slow" />
+            <h2 className="text-5xl font-extrabold text-gray-900 tracking-tight leading-tight">
+              Your Dashboard
             </h2>
           </div>
-          <p className="text-gray-500 text-lg mt-1">
+          <p className="text-xl text-gray-600 mt-3 md:mt-0 md:text-right">
             Welcome,{" "}
-            <span className="text-green-600 font-medium">
-              {dbUser?.name || "Participant"}
+            <span className="text-emerald-600 font-semibold">
+              {dbUser?.name || "Eco-Pioneer"}
             </span>
-            . Manage your eco-missions here.
+            .<br /> Your hub for sustainable impact.
           </p>
         </header>
 
-        {/* Mobile Menu Toggle */}
+        {/* Mobile Menu Toggle - Styled for modern interaction */}
         <button
-          className="lg:hidden w-full py-3 mb-6 bg-white border border-green-300 rounded-xl text-green-600 font-bold flex items-center justify-center gap-2 shadow-sm"
+          className="lg:hidden w-full py-3 mb-8 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl text-emerald-600 font-bold flex items-center justify-center gap-3 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
-          <Settings className="w-5 h-5" />
+          {isMenuOpen ? (
+            <X className="w-6 h-6" />
+          ) : (
+            <Menu className="w-6 h-6" />
+          )}
           {isMenuOpen ? "Hide Navigation" : "Show Navigation"}
         </button>
 
         {/* Main Grid: Sidebar + Content */}
-        <div className="grid lg:grid-cols-[280px_1fr] gap-8">
+        <div className="grid lg:grid-cols-[300px_1fr] gap-10">
           {/* LEFT SIDEBAR NAVIGATION */}
           <aside
-            className={`transition-all duration-300 ${
-              isMenuOpen ? "block" : "hidden lg:block"
-            }`}
+            className={`transition-all duration-500 ease-in-out lg:translate-x-0 ${
+              isMenuOpen
+                ? "translate-x-0 block"
+                : "-translate-x-full hidden lg:block"
+            } absolute lg:relative inset-y-0 left-0 z-20 w-3/4 md:w-1/2 lg:w-full`} // Mobile overlay styling
           >
-            <div className="rounded-3xl shadow-2xl border-l-8 border-t-8 border-green-500/80 transition-all duration-300 bg-white p-6  sticky top-20">
-              <h3 className="text-xl font-bold text-gray-800 mb-4 border-b pb-2 border-green-100">
-                Navigation
+            <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-100 p-8 sticky top-28 transform transition-all duration-300 hover:shadow-emerald-300/40">
+              <h3 className="text-2xl font-bold text-gray-800 mb-6 pb-4 border-b border-gray-100 flex items-center gap-3">
+                <Settings className="w-6 h-6 text-emerald-500" />
+                Navigation Hub
               </h3>
-              <nav className="space-y-2">
+              <nav className="space-y-3">
                 {dashboardLinks.map((link) => (
                   <NavLink
                     key={link.name}
@@ -132,7 +136,7 @@ export default function Dashboard() {
                     end={link.end} // Ensures exact matching for the root path
                     onClick={() => setIsMenuOpen(false)} // Close menu on link click
                   >
-                    <link.icon className="w-5 h-5" />
+                    <link.icon className="w-6 h-6" />
                     {link.name}
                   </NavLink>
                 ))}
@@ -141,8 +145,7 @@ export default function Dashboard() {
           </aside>
 
           {/* MAIN CONTENT AREA (The components load here) */}
-          <main className="rounded-3xl shadow-2xl border-l-8 border-t-8 border-green-500/80 transition-all duration-300 bg-white p-6 sm:p-8  min-h-[60vh]">
-            {/* The default view (MyChallengesList) will render at the root /my-activities route */}
+          <main className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-100 p-8 lg:p-10 min-h-[70vh] transform transition-all duration-300 hover:shadow-blue-300/40">
             <Outlet />
           </main>
         </div>

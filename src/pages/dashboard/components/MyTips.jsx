@@ -104,17 +104,18 @@ export default function MyTips() {
       return;
     }
 
-    const apiUrl = `${import.meta.env.VITE_BACKEND_DOMAIN}/api/tips/${tipId}`;
-
     try {
-      const response = await fetch(apiUrl, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${await currentUser.getIdToken()}`,
-        },
-        body: JSON.stringify(editFormData),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_DOMAIN}/api/tips/${tipId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${await currentUser.getIdToken()}`,
+          },
+          body: JSON.stringify(editFormData),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response
@@ -241,7 +242,7 @@ export default function MyTips() {
 
   return (
     <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 ">
-      <h1 className="text-4xl font-extrabold text-gray-900 mb-8 flex items-center">
+      <h1 className="text-4xl font-extrabold text-gray-900 mb-8 flex items-center border-green-300/50 pb-4 border-b">
         <Leaf className="w-8 h-8 text-green-600 mr-3" />
         My Shared Tips ({tips.length})
       </h1>

@@ -104,7 +104,7 @@ const PostChallenge = () => {
     return valid;
   };
 
-  // ✅ Submit Handler
+  //  Submit Handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -188,7 +188,7 @@ const PostChallenge = () => {
         <div className="flex items-center justify-center mb-6">
           <PlusSquare className="w-10 h-10 text-green-600 mr-3" />
           <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900">
-            Initiate New Mission
+            Create New Challenge
           </h2>
         </div>
         <p className="text-center text-gray-500 mb-8">

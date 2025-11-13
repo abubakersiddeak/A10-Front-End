@@ -12,13 +12,12 @@ import ChallengeDetails from "../components/common/ChallengeDetails";
 import MyChallenges from "../pages/dashboard/components/MyChallenges";
 import PostChallenge from "../pages/dashboard/components/PostChallenge";
 import Profile from "../pages/dashboard/components/Profile";
-import TrackProgress from "../pages/dashboard/components/TrackProgress";
-import MyContributions from "../pages/dashboard/components/MyContributions";
 import AddTips from "../pages/dashboard/components/AddTips";
 import MyTips from "../pages/dashboard/components/MyTips";
 import Tips from "../pages/tips/Tips";
 import AddEvent from "../pages/dashboard/components/AddEvent";
 import AllEvents from "../components/common/AllEvents";
+import MyCreateedChallenge from "../pages/dashboard/components/MyCreatedChallenge";
 
 export const router = createBrowserRouter([
   {
@@ -62,13 +61,10 @@ export const router = createBrowserRouter([
         path: "myactivities/addevent",
         Component: AddEvent,
       },
+
       {
-        path: "myactivities/trackprogress",
-        Component: TrackProgress,
-      },
-      {
-        path: "myactivities/mycontributions",
-        Component: MyContributions,
+        path: "myactivities/mycreateedchallenge",
+        Component: MyCreateedChallenge,
       },
       {
         path: "myactivities/createchallenge",
