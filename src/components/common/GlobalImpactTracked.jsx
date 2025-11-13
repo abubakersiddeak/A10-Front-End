@@ -1,33 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { Zap, Droplet, UserCheck } from "lucide-react";
+import { UserCheck, Leaf, Target } from "lucide-react";
 
 export default function GlobalImpactTracked() {
   const [stats, setStats] = useState({
-    totalCO2: 0,
-    totalPlastic: 0,
     totalJoined: 0,
+    totalUsers: 0,
+    completedMissions: 0,
   });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch live stats (CO2 & Plastic)
-        const statsRes = await fetch(
-          `${import.meta.env.VITE_BACKEND_DOMAIN}/api/statistics`
+        // Fetch all data together
+        const res = await fetch(
+          `${import.meta.env.VITE_BACKEND_DOMAIN}/api/global-stats`
         );
-        const statsData = await statsRes.json();
+        const serverdata = await res.json();
 
-        // Fetch joined challenges
-        const joinRes = await fetch(
-          `${import.meta.env.VITE_BACKEND_DOMAIN}/api/total-joined`
-        );
-        const joinData = await joinRes.json();
+        const data = serverdata.stats;
 
         setStats({
-          totalCO2: statsData.totalCO2 || 0,
-          totalPlastic: statsData.totalPlastic || 0,
-          totalJoined: joinData.totalJoined || 0,
+          totalJoined: data.totalJoined || 0,
+          totalUsers: data.totalUsers || 0,
+          completedMissions: data.totalCompleted || 0,
         });
       } catch (err) {
         console.error("Error fetching live stats:", err);
@@ -43,48 +39,48 @@ export default function GlobalImpactTracked() {
 
   const liveStats = [
     {
-      metric: "CO₂ Saved",
-      value: `${stats.totalCO2.toFixed(2)}`,
-      unit: "kg",
-      icon: Zap,
-      color: "text-red-600",
-    },
-    {
-      metric: "Plastic Reduced",
-      value: `${stats.totalPlastic.toFixed(2)}`,
-      unit: "kg",
-      icon: Droplet,
-      color: "text-blue-600",
-    },
-    {
       metric: "Challenges Joined",
       value: `${stats.totalJoined}`,
       unit: "users",
       icon: UserCheck,
-      color: "text-purple-600",
+      color: "text-green-600",
+    },
+    {
+      metric: "Completed Missions",
+      value: `${stats.completedMissions}`,
+      unit: "tasks",
+      icon: Target,
+      color: "text-green-700",
+    },
+    {
+      metric: "Total Users",
+      value: `${stats.totalUsers}`,
+      unit: "members",
+      icon: Leaf,
+      color: "text-green-500",
     },
   ];
 
   return (
-    <section className="mb-16">
-      <h2 className="text-3xl font-extrabold text-gray-800 mb-8 border-b border-green-200 pb-2">
-        Global Impact Tracked 🌎
+    <section className="mb-16 bg-gradient-to-b from-green-50 to-green-100 p-10 rounded-3xl shadow-lg border border-green-200">
+      <h2 className="text-3xl font-extrabold text-green-900 mb-8 border-b-2 border-green-400 pb-2 text-center">
+        🌎 Global Eco Impact Tracker
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {liveStats.map((stat, index) => (
           <div
             key={index}
-            className="bg-white p-8 rounded-2xl shadow-xl border border-green-100 transition-transform duration-300 hover:scale-[1.03] hover:shadow-green-300/50"
+            className="bg-white/80 p-8 rounded-2xl shadow-lg border border-green-200 transition-transform duration-300 hover:scale-[1.03] hover:shadow-green-400/40 hover:bg-green-50"
           >
             <div className="flex items-center mb-4">
-              <stat.icon size={36} className={`text-green-500 mr-3`} />
-              <p className="text-lg font-medium text-gray-500 uppercase tracking-wider">
+              <stat.icon size={40} className={`mr-4 ${stat.color}`} />
+              <p className="text-lg font-medium text-green-700 uppercase tracking-wider">
                 {stat.metric}
               </p>
             </div>
-            <div className="font-extrabold text-5xl text-gray-900 tracking-tight">
+            <div className="font-extrabold text-5xl text-green-900 tracking-tight">
               {stat.value}
-              <span className={`text-xl text-green-600 ml-2 font-bold`}>
+              <span className="text-xl text-green-700 ml-2 font-semibold">
                 {stat.unit}
               </span>
             </div>
