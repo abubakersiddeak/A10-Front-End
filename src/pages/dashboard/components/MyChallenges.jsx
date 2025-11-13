@@ -232,7 +232,7 @@ export default function MyChallenges() {
         <motion.header
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="pb-8 mb-10 border-b border-green-200"
+          className="md:pb-8 p-4 p  mb-10 border-b border-green-200"
         >
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-5">
             <Leaf className="w-10 h-10 sm:w-12 sm:h-12 text-green-600" />

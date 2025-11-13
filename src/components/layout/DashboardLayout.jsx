@@ -142,7 +142,7 @@ export default function Dashboard() {
           </aside>
 
           {/* MAIN CONTENT AREA (The components load here) */}
-          <main className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-100  lg:p-8 min-h-[70vh] transform transition-all duration-300 hover:shadow-blue-300/40">
+          <main className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-100 p-2 lg:p-8 min-h-[70vh] transform transition-all duration-300 hover:shadow-blue-300/40">
             <Outlet />
           </main>
         </div>

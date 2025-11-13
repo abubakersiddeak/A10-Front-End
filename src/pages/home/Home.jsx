@@ -10,13 +10,13 @@ import GlobalImpactTracked from "../../components/common/GlobalImpactTracked";
 export default function Home() {
   return (
     <div className="w-full bg-linear-to-b from-green-50 to-white text-gray-800 min-h-screen">
-      <div className="max-w-7xl mx-auto  md:px-6 lg:px-8 pt-6 pb-12">
+      <div className="max-w-7xl mx-auto   2xl:px-8 pt-6 pb-12">
         <section className="mb-16">
           <h1 className="sr-only">Eco-Track Home Dashboard</h1>
 
           <HeroCarousel />
         </section>
-        <div className="p-4 md:p-0">
+        <div className="p-4  md:px-6 ">
           <GlobalImpactTracked />
 
           <OngoingEcoMissions />
