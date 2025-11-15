@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../../context/AuthContext";
 import { Leaf } from "lucide-react";
+import { motion } from "framer-motion"; // ✅ FIXED (MOST IMPORTANT)
 
 export default function MyCreateedChallenge() {
   const { currentUser } = useContext(AuthContext);
@@ -40,8 +41,10 @@ export default function MyCreateedChallenge() {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this challenge?"))
       return;
+
     try {
       const token = await currentUser.getIdToken();
+
       const res = await fetch(
         `${import.meta.env.VITE_BACKEND_DOMAIN}/api/challenges/${id}`,
         {
@@ -49,7 +52,9 @@ export default function MyCreateedChallenge() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+
       const result = await res.json();
+
       if (res.ok) {
         toast.success("Deleted successfully!");
         setMyChallenges((prev) => prev.filter((c) => c._id !== id));
@@ -71,9 +76,9 @@ export default function MyCreateedChallenge() {
   };
 
   const handleStepChange = (index, value) => {
-    const newSteps = [...editData.steps];
-    newSteps[index].title = value;
-    setEditData({ ...editData, steps: newSteps });
+    const updatedSteps = [...editData.steps];
+    updatedSteps[index].title = value;
+    setEditData({ ...editData, steps: updatedSteps });
   };
 
   const handleAddStep = () => {
@@ -87,16 +92,16 @@ export default function MyCreateedChallenge() {
   };
 
   const handleRemoveStep = (index) => {
-    const newSteps = [...editData.steps];
-    newSteps.splice(index, 1);
-    // Re-number steps
-    newSteps.forEach((s, idx) => (s.stepNumber = idx + 1));
-    setEditData({ ...editData, steps: newSteps });
+    const updated = [...editData.steps];
+    updated.splice(index, 1);
+    updated.forEach((s, i) => (s.stepNumber = i + 1));
+    setEditData({ ...editData, steps: updated });
   };
 
   const handleSaveEdit = async () => {
     try {
       const token = await currentUser.getIdToken();
+
       const res = await fetch(
         `${
           import.meta.env.VITE_BACKEND_DOMAIN
@@ -110,12 +115,16 @@ export default function MyCreateedChallenge() {
           body: JSON.stringify(editData),
         }
       );
+
       const result = await res.json();
+
       if (res.ok) {
         toast.success("Updated successfully!");
+
         setMyChallenges((prev) =>
           prev.map((c) => (c._id === editingChallenge ? editData : c))
         );
+
         setEditingChallenge(null);
       } else {
         toast.error(result.message || "Update failed");
@@ -126,6 +135,9 @@ export default function MyCreateedChallenge() {
     }
   };
 
+  // -----------------------------------------
+  // LOADING SKELETON
+  // -----------------------------------------
   if (loading)
     return (
       <div className="max-w-6xl mx-auto p-6 grid md:grid-cols-2 gap-6 animate-pulse">
@@ -147,13 +159,17 @@ export default function MyCreateedChallenge() {
         ))}
       </div>
     );
+
+  // -----------------------------------------
+  // NO CHALLENGES
+  // -----------------------------------------
   if (!myChallenges.length)
     return (
       <div className="flex flex-col items-center justify-center mt-16 text-center">
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+          transition={{ duration: 0.5 }}
           className="flex flex-col items-center justify-center bg-gradient-to-b from-green-50 to-green-100 p-8 rounded-3xl shadow-md border border-green-200 max-w-md"
         >
           <Leaf className="w-14 h-14 text-green-600 mb-4 animate-bounce" />
@@ -168,8 +184,11 @@ export default function MyCreateedChallenge() {
       </div>
     );
 
+  // -----------------------------------------
+  // MAIN RETURN
+  // -----------------------------------------
   return (
-    <div className="max-w-6xl relative mx-auto p-6 grid md:grid-cols-2 gap-6">
+    <div className="max-w-6xl mx-auto p-6 grid md:grid-cols-2 gap-6 relative">
       <div className="flex flex-col gap-6 col-span-2 w-full">
         <header className="pb-8 mb-10 border-b border-green-200 w-full">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-5">
@@ -179,35 +198,43 @@ export default function MyCreateedChallenge() {
             </h2>
           </div>
         </header>
+
         <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
           {myChallenges.map((challenge) => (
             <div
               key={challenge._id}
-              className="bg-white rounded-3xl flex flex-col justify-between  shadow-xl border-t-8 border-green-500 overflow-hidden   s p-5 "
+              className="bg-white rounded-3xl shadow-xl border-t-8 border-green-500 p-5 flex flex-col"
             >
               <img
                 src={challenge.imageUrl}
                 alt={challenge.title}
                 className="w-full h-48 object-cover rounded-lg mb-4"
               />
+
               <h2 className="text-xl font-semibold">{challenge.title}</h2>
 
-              <p className="text-gray-600 text-sm mb-2">
+              <p className="text-gray-600 text-sm mb-1">
                 <strong>Category:</strong> {challenge.category}
               </p>
-              <p className="text-gray-600 text-sm mb-2">
+
+              <p className="text-gray-600 text-sm mb-1">
                 <strong>Target:</strong> {challenge.target}
               </p>
-              <p className="text-gray-600 text-sm mb-2">
-                <strong>Total Actions:</strong> {challenge.totalActions}
+
+              <p className="text-gray-600 text-sm mb-1">
+                <strong>Total Actions:</strong>{" "}
+                {challenge.totalActions || editData.steps?.length}
               </p>
-              <p className="text-gray-600 text-sm mb-2">
+
+              <p className="text-gray-600 text-sm mb-1">
                 <strong>Duration:</strong> {challenge.duration} days
               </p>
-              <p className="text-gray-600 text-sm mb-2">
+
+              <p className="text-gray-600 text-sm mb-1">
                 <strong>Start Date:</strong> {challenge.startDate}
               </p>
-              <p className="text-gray-600 text-sm mb-2">
+
+              <p className="text-gray-600 text-sm mb-1">
                 <strong>End Date:</strong> {challenge.endDate}
               </p>
 
@@ -218,6 +245,7 @@ export default function MyCreateedChallenge() {
                 >
                   Edit
                 </button>
+
                 <button
                   onClick={() => handleDelete(challenge._id)}
                   className="cursor-pointer bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg"
@@ -230,146 +258,104 @@ export default function MyCreateedChallenge() {
         </div>
       </div>
 
-      {/* Edit Modal */}
+      {/* ------------------------
+          Edit Modal
+      ------------------------- */}
       {editingChallenge && (
-        <div className=" bg-opacity-50  max-h-[1000px] absolute inset-0 flex items-center bg-white  shadow-2xl rounded-2xl justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-lg max-h-[90%] overflow-y-auto">
+        <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 w-full max-w-lg max-h-[90%] overflow-y-auto shadow-2xl">
             <h2 className="text-2xl font-bold mb-4">Edit Challenge</h2>
 
-            {/* Editable Fields */}
-            <div className="flex flex-col gap-3 ">
+            {/* FORM */}
+            <div className="flex flex-col gap-3">
               <label className="font-semibold">Title</label>
               <input
                 type="text"
-                value={editData.title}
+                value={editData.title || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, title: e.target.value })
                 }
-                className="border p-2 rounded w-full"
+                className="border p-2 rounded"
               />
 
               <label className="font-semibold">Description</label>
               <textarea
-                value={editData.description}
+                rows={3}
+                value={editData.description || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, description: e.target.value })
                 }
-                className="border p-2 rounded w-full"
-                rows={3}
+                className="border p-2 rounded"
               />
 
               <label className="font-semibold">Category</label>
               <input
                 type="text"
-                value={editData.category}
+                value={editData.category || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, category: e.target.value })
                 }
-                className="border p-2 rounded w-full"
+                className="border p-2 rounded"
               />
 
               <label className="font-semibold">Image URL</label>
               <input
                 type="text"
-                value={editData.imageUrl}
+                value={editData.imageUrl || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, imageUrl: e.target.value })
                 }
-                className="border p-2 rounded w-full"
+                className="border p-2 rounded"
               />
 
               <label className="font-semibold">Target</label>
               <input
                 type="text"
-                value={editData.target}
+                value={editData.target || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, target: e.target.value })
                 }
-                className="border p-2 rounded w-full"
+                className="border p-2 rounded"
               />
 
-              <label className="font-semibold">Total Actions</label>
-              <input
-                type="number"
-                value={editData.totalActions}
-                onChange={(e) =>
-                  setEditData({
-                    ...editData,
-                    totalActions: parseInt(e.target.value),
-                  })
-                }
-                className="border p-2 rounded w-full"
-              />
+              {/* STEPS */}
+              <label className="font-semibold mt-3">Steps</label>
 
-              <label className="font-semibold">Duration (days)</label>
-              <input
-                type="number"
-                value={editData.duration}
-                onChange={(e) =>
-                  setEditData({
-                    ...editData,
-                    duration: parseInt(e.target.value),
-                  })
-                }
-                className="border p-2 rounded w-full"
-              />
+              {editData.steps.map((step, idx) => (
+                <div key={idx} className="flex gap-2 items-center">
+                  <input
+                    type="text"
+                    className="border p-2 rounded flex-1"
+                    value={step.title}
+                    onChange={(e) => handleStepChange(idx, e.target.value)}
+                  />
 
-              <label className="font-semibold">Start Date</label>
-              <input
-                type="date"
-                value={editData.startDate}
-                onChange={(e) =>
-                  setEditData({ ...editData, startDate: e.target.value })
-                }
-                className="border p-2 rounded w-full"
-              />
+                  <button
+                    onClick={() => handleRemoveStep(idx)}
+                    className="bg-red-600 cursor-pointer hover:bg-red-700 text-white px-3 py-1 rounded"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
 
-              <label className="font-semibold">End Date</label>
-              <input
-                type="date"
-                value={editData.endDate}
-                onChange={(e) =>
-                  setEditData({ ...editData, endDate: e.target.value })
-                }
-                className="border p-2 rounded w-full"
-              />
-
-              {/* Steps */}
-              <div>
-                <label className="font-semibold">Steps</label>
-                {editData.steps.map((step, idx) => (
-                  <div key={idx} className="flex gap-2 items-center mb-1">
-                    <input
-                      type="text"
-                      value={step.title}
-                      onChange={(e) => handleStepChange(idx, e.target.value)}
-                      className="border p-2 rounded flex-1"
-                    />
-                    <button
-                      onClick={() => handleRemoveStep(idx)}
-                      className="bg-red-600 cursor-pointer hover:bg-red-700 text-white px-3 py-1 rounded"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ))}
-                <button
-                  onClick={handleAddStep}
-                  className="mt-2 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-                >
-                  Add Step
-                </button>
-              </div>
+              <button
+                onClick={handleAddStep}
+                className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white px-4 py-2 rounded mt-2"
+              >
+                Add Step
+              </button>
             </div>
 
-            {/* Buttons */}
-            <div className="flex justify-end mt-6 gap-3">
+            {/* FOOTER BUTTONS */}
+            <div className="flex justify-end gap-3 mt-6">
               <button
                 onClick={() => setEditingChallenge(null)}
                 className="bg-gray-400 cursor-pointer hover:bg-gray-500 text-white px-4 py-2 rounded"
               >
                 Cancel
               </button>
+
               <button
                 onClick={handleSaveEdit}
                 className="bg-green-600 cursor-pointer hover:bg-green-700 text-white px-4 py-2 rounded"

@@ -215,7 +215,7 @@ export default function MyChallenges() {
             Start your first eco challenge and make an impact today!
           </p>
           <Link
-            to="/challenges"
+            to="/challenge"
             className="inline-flex items-center justify-center bg-green-600 hover:bg-green-700 text-white font-medium px-6 py-3 rounded-full shadow-lg transition duration-300 transform hover:scale-[1.03]"
           >
             Explore Challenges
